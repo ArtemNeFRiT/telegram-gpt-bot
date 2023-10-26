@@ -2,7 +2,6 @@ import datetime
 import json
 import logging
 import os
-from typing import Optional
 
 from features.statistic.model.usage import Usage
 
@@ -45,7 +44,7 @@ class StatisticProvider:
 
         file.close()
 
-    def save_statistic2(self, user_name: str, completion_words_count: int):
+    def save_statistic(self, user_name: str, completion_words_count: int):
         self._create_statistic_folder()
         self._save_statistic(user_name, completion_words_count)
 

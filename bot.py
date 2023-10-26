@@ -50,7 +50,7 @@ async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def reply_private_message(chat_id, user_name, user_message, bot):
     result = open_ai.get_response_for_new_message(user_name, user_message)
     words_count = count_words(result)
-    statistic_provider.save_statistic2(user_name, words_count)
+    statistic_provider.save_statistic(user_name, words_count)
     events_tracker.save_event(user_name, "получил ответ. Кол-во слов: " + str(words_count))
     await telegram_bot.post_message_to_telegram_chat(chat_id, result, bot)
 
