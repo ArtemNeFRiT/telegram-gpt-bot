@@ -105,5 +105,8 @@ dmypy.json
 *messages.json
 events.txt
 statistic.txt
+*.txt
+security/users.txt
+security/groups.txt
 
 .idea
