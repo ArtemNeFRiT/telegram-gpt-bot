@@ -16,10 +16,10 @@ class OpenAI:
     _OPEN_AI_MODEL = "gpt-3.5-turbo"
     _MAX_TOKENS = 4096
     _TOKENS_TO_START_OPTIMIZING = 2750
-    OPEN_AI_TOKEN = ""
+    _OPEN_AI_TOKEN = ""
 
     def __init__(self, guard: Guard):
-        openai.api_key = self.OPEN_AI_TOKEN
+        openai.api_key = self._OPEN_AI_TOKEN
         self.context = Context(guard)
 
     def _generate_ai_response(self, user_messages):
