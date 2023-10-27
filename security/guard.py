@@ -25,8 +25,6 @@ class Guard:
             user = User(
                 telegram_alias=user_data['telegram_alias'],
                 user_name=user_data['user_name'],
-                position=user_data['position'],
-                gender=user_data['gender'],
                 about=user_data['about']
             )
             users.append(user)
