@@ -15,7 +15,7 @@ class TelegramBot:
     def __init__(self):
         self.token = self.TELEGRAM_BOT_TOKEN
 
-    async def post_message_to_telegram_chat(self, chat_id: int, message, bot: Bot, disable_notification=False):
+    async def post_message_to_telegram_chat(self, chat_id: int, message: str, bot: Bot, disable_notification=False):
         for i in range(0, len(message), self._TELEGRAM_MAX_MESSAGE_LENGTH):
             chunk = message[i:i + self._TELEGRAM_MAX_MESSAGE_LENGTH]
             await bot.send_message(chat_id=chat_id, text=chunk, disable_notification=disable_notification)

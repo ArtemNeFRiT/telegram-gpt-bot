@@ -20,8 +20,8 @@ class Concierge:
         result = self.open_ai.get_response_for_new_group_message(chat_id, "", prompt)
         await self.telegram_bot.post_message_to_telegram_chat(chat_id, result, bot)
 
-    def _create_hello_prompt(self):
+    def _create_hello_prompt(self) -> str:
         return "Представься."
 
-    def _create_welcome_prompt(self, user):
+    def _create_welcome_prompt(self, user) -> str:
         return "Придумай небольшое приветственное сообщение для нового пользователя чата - " + user

@@ -86,7 +86,7 @@ class StatisticProvider:
         if not os.path.exists(STATISTIC_FOLDER_NAME):
             os.makedirs(STATISTIC_FOLDER_NAME)
 
-    def find_users_with_max_usage(self, count: int):
+    def find_users_with_max_usage(self, count: int) -> list[Usage]:
         statistics_file_full_path = self._get_statistic_file_full_path()
         try:
             with open(statistics_file_full_path, 'r') as file:

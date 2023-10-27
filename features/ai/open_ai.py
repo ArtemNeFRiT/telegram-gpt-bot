@@ -32,7 +32,7 @@ class OpenAI:
         usage_model = UsageModel(prompt_tokens, completion_tokens, total_tokens)
         return AIResponse(assistant_message, usage_model)
 
-    def clear_user_messages(self, user_name):
+    def clear_user_messages(self, user_name: str):
         self.context.clear_user_messages(user_name)
 
     def get_response_for_new_message(self, user_name: str, message):

@@ -47,7 +47,7 @@ async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await telegram_bot.post_group_not_allowed_message(chat_id, context.bot)
 
 
-async def reply_private_message(chat_id: int, user_name: str, user_message, bot: Bot):
+async def reply_private_message(chat_id: int, user_name: str, user_message: str, bot: Bot):
     result = open_ai.get_response_for_new_message(user_name, user_message)
     words_count = count_words(result)
     statistic_provider.save_statistic(user_name, words_count)
@@ -55,7 +55,7 @@ async def reply_private_message(chat_id: int, user_name: str, user_message, bot:
     await telegram_bot.post_message_to_telegram_chat(chat_id, result, bot)
 
 
-async def reply_in_group(chat_id: int, user_name: str, user_message, bot: Bot):
+async def reply_in_group(chat_id: int, user_name: str, user_message: str, bot: Bot):
     result = open_ai.get_response_for_new_group_message(chat_id, user_name, user_message)
     words_count = count_words(result)
     events_tracker.save_event(user_name, "получил ответ в группе. Кол-во слов: " + str(words_count))
@@ -109,9 +109,15 @@ async def new_member_welcome_message(update: Update, context: ContextTypes.DEFAU
 
     bot_added_to_group_event = "@chat_gpt_ai_tg_bot" == new_member
     if bot_added_to_group_event:
-        await concierge.say_hello(chat_id, context.bot)
+        if guard.is_group_available(chat_id):
+            await concierge.say_hello(chat_id, context.bot)
+        else:
+            await telegram_bot.post_group_not_allowed_message(chat_id, context.bot)
     else:
-        await concierge.welcome_new_user(chat_id, context.bot, new_member_first_name)
+        if guard.is_group_available(chat_id):
+            await concierge.welcome_new_user(chat_id, context.bot, new_member_first_name)
+        else:
+            await telegram_bot.post_group_not_allowed_message(chat_id, context.bot)
 
 
 def main():
