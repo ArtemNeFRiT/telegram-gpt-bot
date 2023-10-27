@@ -49,34 +49,34 @@ class Guard:
             groups.append(group)
         return groups
 
-    def is_user_available(self, telegram_alias):
+    def is_user_available(self, telegram_alias: str):
         telegram_alias_lower = telegram_alias.lower()
         for user in self.users:
             if user.telegram_alias == telegram_alias_lower:
                 return True
         return False
 
-    def is_user_admin(self, telegram_alias):
+    def is_user_admin(self, telegram_alias: str):
         telegram_alias_lower = telegram_alias.lower()
         for admin in self.admins:
             if admin == telegram_alias_lower:
                 return True
         return False
 
-    def is_group_available(self, group_chat_id):
+    def is_group_available(self, group_chat_id: int):
         for group in self.groups:
             if group.chat_id == group_chat_id:
                 return True
         return False
 
-    def get_user(self, telegram_alias) -> Optional[User]:
+    def get_user(self, telegram_alias: str) -> Optional[User]:
         telegram_alias_lower = telegram_alias.lower()
         for user in self.users:
             if user.telegram_alias == telegram_alias_lower:
                 return user
         return None
 
-    def get_group(self, group_chat_id) -> Optional[Group]:
+    def get_group(self, group_chat_id: int) -> Optional[Group]:
         for group in self.groups:
             if group.chat_id == group_chat_id:
                 return group

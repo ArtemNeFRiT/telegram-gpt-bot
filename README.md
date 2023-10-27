@@ -22,8 +22,19 @@ Enjoy conversing with the bot powered by ChatGPT Turbo 3.5 and experiment with d
 
 # Get access
 
-// work in progress
+### Private access
 
+1. Fill out a [simple form](https://forms.gle/26Uq9iDtmGs3DpR96). With this information AI will understand the context of conversation.
+
+2. 
+
+### Group access
+
+1. Fill out a [simple form](https://forms.gle/gndbXKAamKrjMPAD8). With this information AI will understand the context of conversation.
+
+2. 
+
+# Pricing and Limits (WIP)
 
 # Configuration your Bot
 

@@ -1,6 +1,6 @@
 import logging
 
-from telegram import Update
+from telegram import Update, Bot
 from telegram.constants import ChatType
 from telegram.ext import CommandHandler, MessageHandler, Application, ContextTypes, filters
 
@@ -47,7 +47,7 @@ async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await telegram_bot.post_group_not_allowed_message(chat_id, context.bot)
 
 
-async def reply_private_message(chat_id, user_name, user_message, bot):
+async def reply_private_message(chat_id: int, user_name: str, user_message, bot: Bot):
     result = open_ai.get_response_for_new_message(user_name, user_message)
     words_count = count_words(result)
     statistic_provider.save_statistic(user_name, words_count)
@@ -55,7 +55,7 @@ async def reply_private_message(chat_id, user_name, user_message, bot):
     await telegram_bot.post_message_to_telegram_chat(chat_id, result, bot)
 
 
-async def reply_in_group(chat_id, user_name, user_message, bot):
+async def reply_in_group(chat_id: int, user_name: str, user_message, bot: Bot):
     result = open_ai.get_response_for_new_group_message(chat_id, user_name, user_message)
     words_count = count_words(result)
     events_tracker.save_event(user_name, "получил ответ в группе. Кол-во слов: " + str(words_count))

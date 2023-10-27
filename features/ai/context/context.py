@@ -15,7 +15,7 @@ class Context:
     def __init__(self, guard: Guard):
         self.guard = guard
 
-    def load_user_messages(self, user_name):
+    def load_user_messages(self, user_name: str):
         file_name = f"data/{user_name}_messages.json"
         try:
             with open(file_name, "r") as file:
@@ -30,7 +30,7 @@ class Context:
         except FileNotFoundError:
             return UserData(user_name, [], UsageModel(0, 0, 0))
 
-    def load_chat_data(self, chat_id):
+    def load_chat_data(self, chat_id: int):
         chat_id_str = str(chat_id)
         return self.load_user_messages(chat_id_str)
 
@@ -41,9 +41,9 @@ class Context:
         chat_id_str = str(data.chat_id)
         self._save_data(chat_id_str, data.messages, data.usage)
 
-    def _save_data(self, id, messages, usage):
+    def _save_data(self, user_id: str, messages, usage: UsageModel):
         data_json = {
-            "user_name": id,
+            "user_name": user_id,
             "usage": {
                 "prompt_tokens": usage.prompt_tokens,
                 "completion_tokens": usage.completion_tokens,
@@ -57,11 +57,11 @@ class Context:
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
 
-        file_name = f"data/{id}_messages.json"
+        file_name = f"data/{user_id}_messages.json"
         with open(file_name, "w") as file:
             json.dump(data_json, file)
 
-    def clear_user_messages(self, user_name):
+    def clear_user_messages(self, user_name: str):
         file_name = f"data/{user_name}_messages.json"
         try:
             os.remove(file_name)
@@ -70,14 +70,14 @@ class Context:
         except Exception as e:
             logger.info(f"Ошибка при удалении файла: {e}")
 
-    def create_system_message_for_group(self, chat_id):
+    def create_system_message_for_group(self, chat_id: int):
         group = self.guard.get_group(chat_id)
         if group is None:
             return None
         else:
             return group.create_system_message()
 
-    def create_system_message_for_private(self, telegram_alias):
+    def create_system_message_for_private(self, telegram_alias: str):
         user = self.guard.get_user(telegram_alias)
         if user is None:
             return None

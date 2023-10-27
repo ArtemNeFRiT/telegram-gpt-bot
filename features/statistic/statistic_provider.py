@@ -12,7 +12,7 @@ STATISTIC_FOLDER_NAME = "statistics"
 
 class StatisticProvider:
 
-    def _save_statistic(self, user_name, words_count):
+    def _save_statistic(self, user_name: str, words_count: int):
         file = open(STATISTIC_FILE_PATH, "a+")
         file.seek(0)
 
@@ -86,7 +86,7 @@ class StatisticProvider:
         if not os.path.exists(STATISTIC_FOLDER_NAME):
             os.makedirs(STATISTIC_FOLDER_NAME)
 
-    def find_users_with_max_usage(self, count):
+    def find_users_with_max_usage(self, count: int):
         statistics_file_full_path = self._get_statistic_file_full_path()
         try:
             with open(statistics_file_full_path, 'r') as file:

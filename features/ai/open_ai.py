@@ -35,7 +35,7 @@ class OpenAI:
     def clear_user_messages(self, user_name):
         self.context.clear_user_messages(user_name)
 
-    def get_response_for_new_message(self, user_name, message):
+    def get_response_for_new_message(self, user_name: str, message):
         user_data = self.context.load_user_messages(user_name)
         user_messages = user_data.messages
 
@@ -67,7 +67,7 @@ class OpenAI:
         self.context.save_user_messages(user_data)
         return result.assistant_message
 
-    def get_response_for_new_group_message(self, chat_id, user_name, message):
+    def get_response_for_new_group_message(self, chat_id: int, user_name: str, message):
         chat_data = self.context.load_chat_data(chat_id)
         chat_messages = chat_data.messages
 

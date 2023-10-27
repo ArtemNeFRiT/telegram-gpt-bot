@@ -1,3 +1,5 @@
+from telegram import Bot
+
 GREETING_MESSAGE = "Привет! Я OpenAI бот. Используйте мои навыки для помощи в решении задач."
 NOT_ALLOWED_MESSAGE = "Извините, вас нет в списке пользователей. Для организации доступа заполните заявку: https://forms.gle/rgPQktvu5FCwpa7Q7"
 GROUP_NOT_ALLOWED_MESSAGE = "Извините, не нашел данную группу в списке доступных. Для организации доступа заполните заявку: https://forms.gle/MU7JKF9tGKW272k6A"
@@ -13,25 +15,25 @@ class TelegramBot:
     def __init__(self):
         self.token = self.TELEGRAM_BOT_TOKEN
 
-    async def post_message_to_telegram_chat(self, chat_id, message, bot, disable_notification=False):
+    async def post_message_to_telegram_chat(self, chat_id: int, message, bot: Bot, disable_notification=False):
         for i in range(0, len(message), self._TELEGRAM_MAX_MESSAGE_LENGTH):
             chunk = message[i:i + self._TELEGRAM_MAX_MESSAGE_LENGTH]
             await bot.send_message(chat_id=chat_id, text=chunk, disable_notification=disable_notification)
 
-    async def post_greetings_message(self, chat_id, bot):
+    async def post_greetings_message(self, chat_id: int, bot: Bot):
         await self.post_message_to_telegram_chat(chat_id, GREETING_MESSAGE, bot)
 
-    async def post_not_allowed_message(self, chat_id, bot):
+    async def post_not_allowed_message(self, chat_id: int, bot: Bot):
         await self.post_message_to_telegram_chat(chat_id, NOT_ALLOWED_MESSAGE, bot)
 
-    async def post_group_not_allowed_message(self, chat_id, bot):
+    async def post_group_not_allowed_message(self, chat_id: int, bot: Bot):
         await self.post_message_to_telegram_chat(chat_id, GROUP_NOT_ALLOWED_MESSAGE, bot)
 
-    async def post_context_cleared_message(self, chat_id, bot):
+    async def post_context_cleared_message(self, chat_id: int, bot: Bot):
         await self.post_message_to_telegram_chat(chat_id, CLEARED_CONTEXT_MESSAGE, bot)
 
-    async def post_group_context_cleared_message(self, chat_id, bot):
+    async def post_group_context_cleared_message(self, chat_id: int, bot: Bot):
         await self.post_message_to_telegram_chat(chat_id, CLEARED_GROUP_CONTEXT_MESSAGE, bot)
 
-    async def post_not_administrator_message(self, chat_id, bot):
+    async def post_not_administrator_message(self, chat_id: int, bot: Bot):
         await self.post_message_to_telegram_chat(chat_id, NOT_ALLOWED_MESSAGE, bot)
