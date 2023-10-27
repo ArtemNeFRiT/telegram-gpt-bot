@@ -1,6 +1,10 @@
+# Documentation
+
+[English](../../docs/en/README.md) | [Русский](../../docs/ru/README.md)
+
 The `Telegram GPT Bot` is Telegram Bot integrated with ChatGPT 3.5 Turbo AI model.
 
-![](assets/preview1.png)
+![](../../assets/preview1.png)
 
 # Description
 
@@ -50,7 +54,7 @@ Enjoy conversing with the bot powered by ChatGPT Turbo 3.5 and experiment with d
 
 5. Copy the API token provided by BotFather. This token is unique to your bot and will be used to authenticate your bot and make API calls.
 
-6. Set this token to `TELEGRAM_BOT_TOKEN` variable in [TelegramBot](features/telegram/telegram_bot.py)
+6. Set this token to `TELEGRAM_BOT_TOKEN` variable in [TelegramBot](../../features/telegram/telegram_bot.py)
 
 That's it! You have successfully created a Telegram bot and obtained its token.
 
@@ -73,7 +77,7 @@ That's it! You have successfully created a Telegram bot and obtained its token.
 
 8. Once the API key has been generated, copy it or securely store it in a safe place. This API key will be used to authenticate your requests to the OpenAI API.
 
-9. Set this token to `_OPEN_AI_TOKEN` variable in [OpenAI](features/ai/open_ai.py)
+9. Set this token to `_OPEN_AI_TOKEN` variable in [OpenAI](../../features/ai/open_ai.py)
 
 That's it! You have now obtained an OpenAI API key. You can use this key to make requests to the OpenAI API and access language models.
 
