@@ -8,17 +8,17 @@ The `Telegram GPT Bot` is Telegram Bot integrated with ChatGPT 3.5 Turbo AI mode
 
 # Description
 
-This Telegram bot is integrated with the ChatGPT Turbo 3.5 model from OpenAI, 
+This Telegram bot is integrated with the ChatGPT from OpenAI, 
 providing powerful natural language generation capabilities. 
 It is designed to answer questions and engage in conversations with users.
 
 With this bot, you can:
 
-1. Chat with ChatGPT Turbo 3.5 by sending text messages to the bot.
+1. Chat with ChatGPT by sending text messages to the bot.
 2. Ask the bot questions, seek information, or request advice.
 3. Seek help with specific tasks or get general recommendations.
 4. Explore and discuss various topics with the bot.
-5. Receive high-quality responses leveraging the language model power of ChatGPT Turbo 3.5.
+5. Receive high-quality responses leveraging the language model power of ChatGPT.
 
 Ensure that you comply with the terms of use and guidelines for using the bot and the OpenAI API. Be polite and respect privacy policies while interacting with the bot.
 
