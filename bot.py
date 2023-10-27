@@ -28,6 +28,7 @@ async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_name = update.effective_user.name
     user_message = update.message.text
     chat_type = update.effective_message.chat.type
+    message_id = update.message.message_id
 
     is_private_message = chat_type == ChatType.PRIVATE
 
@@ -42,7 +43,7 @@ async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_message_stripped = user_message.replace("@chat_gpt_ai_tg_bot", "").strip()
         if is_appeal_in_group:
             if guard.is_group_available(chat_id):
-                await reply_in_group(chat_id, user_name, user_message_stripped, context.bot)
+                await reply_in_group(chat_id, message_id, user_name, user_message_stripped, context.bot)
             else:
                 await telegram_bot.post_group_not_allowed_message(chat_id, context.bot)
 
@@ -55,11 +56,11 @@ async def reply_private_message(chat_id: int, user_name: str, user_message: str,
     await telegram_bot.post_message_to_telegram_chat(chat_id, result, bot)
 
 
-async def reply_in_group(chat_id: int, user_name: str, user_message: str, bot: Bot):
+async def reply_in_group(chat_id: int, message_id: int, user_name: str, user_message: str, bot: Bot):
     result = open_ai.get_response_for_new_group_message(chat_id, user_name, user_message)
     words_count = count_words(result)
     events_tracker.save_event(user_name, "получил ответ в группе. Кол-во слов: " + str(words_count))
-    await telegram_bot.post_message_to_telegram_chat(chat_id, result, bot)
+    await telegram_bot.reply_message_to_telegram_chat(chat_id, message_id, result, bot)
 
 
 def count_words(sentence):

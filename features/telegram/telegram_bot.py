@@ -18,7 +18,15 @@ class TelegramBot:
     async def post_message_to_telegram_chat(self, chat_id: int, message: str, bot: Bot, disable_notification=False):
         for i in range(0, len(message), self._TELEGRAM_MAX_MESSAGE_LENGTH):
             chunk = message[i:i + self._TELEGRAM_MAX_MESSAGE_LENGTH]
-            await bot.send_message(chat_id=chat_id, text=chunk, disable_notification=disable_notification)
+            await bot.send_message(chat_id, chunk, disable_notification=disable_notification)
+
+    async def reply_message_to_telegram_chat(
+            self, chat_id: int, message_id: int, message: str, bot: Bot,
+            disable_notification=False):
+        for i in range(0, len(message), self._TELEGRAM_MAX_MESSAGE_LENGTH):
+            chunk = message[i:i + self._TELEGRAM_MAX_MESSAGE_LENGTH]
+            await bot.send_message(chat_id, chunk, disable_notification=disable_notification,
+                                   reply_to_message_id=message_id)
 
     async def post_greetings_message(self, chat_id: int, bot: Bot):
         await self.post_message_to_telegram_chat(chat_id, GREETING_MESSAGE, bot)

@@ -35,7 +35,7 @@ class OpenAI:
     def clear_user_messages(self, user_name: str):
         self.context.clear_user_messages(user_name)
 
-    def get_response_for_new_message(self, user_name: str, message):
+    def get_response_for_new_message(self, user_name: str, message: str):
         user_data = self.context.load_user_messages(user_name)
         user_messages = user_data.messages
 
@@ -53,6 +53,7 @@ class OpenAI:
                     f"total: {result.usage.total_tokens}")
 
         user_messages.append({"role": "assistant", "content": result.assistant_message})
+
         if result.usage.total_tokens > self._TOKENS_TO_START_OPTIMIZING:
             logger.info(f"optimizing usage for user {user_name}")
             first_message = user_messages[0]
@@ -65,9 +66,10 @@ class OpenAI:
 
         user_data = UserData(user_name, user_messages, result.usage)
         self.context.save_user_messages(user_data)
+
         return result.assistant_message
 
-    def get_response_for_new_group_message(self, chat_id: int, user_name: str, message):
+    def get_response_for_new_group_message(self, chat_id: int, user_name: str, message: str):
         chat_data = self.context.load_chat_data(chat_id)
         chat_messages = chat_data.messages
 
@@ -82,6 +84,7 @@ class OpenAI:
         result = self._generate_ai_response(chat_messages)
 
         chat_messages.append({"role": "assistant", "content": result.assistant_message})
+
         if result.usage.total_tokens > self._TOKENS_TO_START_OPTIMIZING:
             first_message = chat_messages[0]
             if first_message["role"] == "system":
@@ -93,4 +96,5 @@ class OpenAI:
 
         chat_data = ChatData(chat_id, chat_messages, result.usage)
         self.context.save_chat_data(chat_data)
+
         return result.assistant_message
