@@ -1,6 +1,6 @@
 # Документация
 
-[English](../../docs/en/README.md) | [Русский](../../docs/ru/README.md)
+[English](../../README.md) | [Русский](../../docs/ru/README.md)
 
 `Telegram GPT Bot` - это телеграм-бот, интегрированный с моделью искусственного интеллекта ChatGPT 3.5 Turbo
 
