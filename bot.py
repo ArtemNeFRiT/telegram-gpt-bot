@@ -141,7 +141,6 @@ def main():
     application.add_handler(CommandHandler("clear_context", clear_private_context))
     application.add_handler(CommandHandler("clear_group_context", clear_group_context))
     application.add_handler(CommandHandler("post_month_statistics", post_month_statistics))
-    application.add_handler(CommandHandler("generate_image", generate_image))
 
     application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, new_member_welcome_message))
     application.add_handler(MessageHandler(filters.TEXT, reply))
