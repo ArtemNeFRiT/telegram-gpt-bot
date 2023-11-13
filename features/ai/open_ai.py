@@ -1,6 +1,6 @@
 import logging
 
-import openai
+from openai import OpenAI
 
 from features.ai.model.ai_response import AIResponse
 from features.ai.model.chat_data import ChatData
@@ -12,23 +12,29 @@ from security.guard import Guard
 logger = logging.getLogger(__name__)
 
 
-class OpenAI:
+class OpenAIClient:
     _OPEN_AI_MODEL = "gpt-4-1106-preview"
+    _OPEN_AI_DALL_E_MODEL = "dall-e-3"
     _OPEN_AI_TOKEN = ""
     _TOKENS_TO_START_OPTIMIZING = 5100  # ~1500 слов
     _TOKENS_PER_WORD = 3.4  # 1 слово = ~3.4 токена
 
     def __init__(self, guard: Guard):
-        openai.api_key = self._OPEN_AI_TOKEN
+        self.open_ai = OpenAI(
+            api_key=self._OPEN_AI_TOKEN
+        )
         self.context = Context(guard)
 
     def _generate_ai_response(self, user_messages) -> AIResponse:
-        response = openai.ChatCompletion.create(model=self._OPEN_AI_MODEL, messages=user_messages)
-        assistant_message = response["choices"][0]["message"]["content"]
-        usage = response["usage"]
-        prompt_tokens = usage["prompt_tokens"]
-        completion_tokens = usage["completion_tokens"]
-        total_tokens = usage["total_tokens"]
+        completion = self.open_ai.chat.completions.create(
+            model=self._OPEN_AI_MODEL,
+            messages=user_messages
+        )
+        assistant_message = completion.choices[0].message.content
+        usage = completion.usage
+        prompt_tokens = usage.prompt_tokens
+        completion_tokens = usage.completion_tokens
+        total_tokens = usage.total_tokens
         usage_model = UsageModel(prompt_tokens, completion_tokens, total_tokens)
         return AIResponse(assistant_message, usage_model)
 
@@ -94,3 +100,13 @@ class OpenAI:
         self.context.save_chat_data(chat_data)
 
         return result
+
+    def generate_ai_response_with_image(self, prompt) -> str:
+        response = self.open_ai.images.generate(
+            model=self._OPEN_AI_DALL_E_MODEL,
+            prompt=prompt,
+            size="1024x1024",
+            quality="standard",
+            n=1
+        )
+        return response.data[0].url

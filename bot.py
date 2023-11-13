@@ -4,7 +4,7 @@ from telegram import Update, Bot
 from telegram.constants import ChatType
 from telegram.ext import CommandHandler, MessageHandler, Application, ContextTypes, filters
 
-from features.ai.open_ai import OpenAI
+from features.ai.open_ai import OpenAIClient
 from features.analytics.events import EventsTracker
 from features.statistic.statistic_provider import StatisticProvider
 from features.telegram.telegram_bot import TelegramBot
@@ -13,7 +13,7 @@ from security.guard import Guard
 
 logger = logging.getLogger(__name__)
 guard = Guard()
-open_ai = OpenAI(guard)
+open_ai = OpenAIClient(guard)
 telegram_bot = TelegramBot()
 events_tracker = EventsTracker()
 statistic_provider = StatisticProvider()
@@ -97,6 +97,22 @@ async def post_month_statistics(update: Update, context: ContextTypes.DEFAULT_TY
         await telegram_bot.post_not_administrator_message(update.effective_chat.id, context.bot)
 
 
+async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    user_name = update.effective_user.name
+    user_message = update.message.text
+    chat_type = update.effective_message.chat.type
+
+    prompt = user_message.replace("/generate_image", "").strip()
+
+    if guard.is_user_available(user_name):
+        generated_image_url = open_ai.generate_ai_response_with_image(prompt)
+        await telegram_bot.post_message_to_telegram_chat(chat_id, generated_image_url, context.bot)
+    else:
+        events_tracker.user_not_found(user_name)
+        await telegram_bot.post_not_allowed_message(chat_id, context.bot)
+
+
 async def new_member_welcome_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     new_member_first_name = update.message.new_chat_members[0].first_name
     new_member = update.message.new_chat_members[0].name
@@ -125,6 +141,7 @@ def main():
     application.add_handler(CommandHandler("clear_context", clear_private_context))
     application.add_handler(CommandHandler("clear_group_context", clear_group_context))
     application.add_handler(CommandHandler("post_month_statistics", post_month_statistics))
+    application.add_handler(CommandHandler("generate_image", generate_image))
 
     application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, new_member_welcome_message))
     application.add_handler(MessageHandler(filters.TEXT, reply))

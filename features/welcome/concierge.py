@@ -1,12 +1,12 @@
 from telegram import Bot
 
-from features.ai.open_ai import OpenAI
+from features.ai.open_ai import OpenAIClient
 from features.telegram.telegram_bot import TelegramBot
 
 
 class Concierge:
 
-    def __init__(self, telegram_bot: TelegramBot, open_ai: OpenAI):
+    def __init__(self, telegram_bot: TelegramBot, open_ai: OpenAIClient):
         self.telegram_bot = telegram_bot
         self.open_ai = open_ai
 
