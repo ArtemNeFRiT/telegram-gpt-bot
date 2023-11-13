@@ -13,16 +13,16 @@ logger = logging.getLogger(__name__)
 
 
 class OpenAI:
-    _OPEN_AI_MODEL = "gpt-3.5-turbo"
-    _MAX_TOKENS = 4096
-    _TOKENS_TO_START_OPTIMIZING = 2750
+    _OPEN_AI_MODEL = "gpt-4-1106-preview"
     _OPEN_AI_TOKEN = ""
+    _TOKENS_TO_START_OPTIMIZING = 5100  # ~1500 слов
+    _TOKENS_PER_WORD = 3.4  # 1 слово = ~3.4 токена
 
     def __init__(self, guard: Guard):
         openai.api_key = self._OPEN_AI_TOKEN
         self.context = Context(guard)
 
-    def _generate_ai_response(self, user_messages):
+    def _generate_ai_response(self, user_messages) -> AIResponse:
         response = openai.ChatCompletion.create(model=self._OPEN_AI_MODEL, messages=user_messages)
         assistant_message = response["choices"][0]["message"]["content"]
         usage = response["usage"]
@@ -35,7 +35,7 @@ class OpenAI:
     def clear_user_messages(self, user_name: str):
         self.context.clear_user_messages(user_name)
 
-    def get_response_for_new_message(self, user_name: str, message: str):
+    def get_response_for_new_message(self, user_name: str, message: str) -> AIResponse:
         user_data = self.context.load_user_messages(user_name)
         user_messages = user_data.messages
 
@@ -47,10 +47,6 @@ class OpenAI:
         user_messages.append({"role": "user", "content": message})
 
         result = self._generate_ai_response(user_messages)
-
-        logger.info(f"{user_name} usages. prompt: {result.usage.prompt_tokens}, "
-                    f"completion: {result.usage.completion_tokens}, "
-                    f"total: {result.usage.total_tokens}")
 
         user_messages.append({"role": "assistant", "content": result.assistant_message})
 
@@ -67,9 +63,9 @@ class OpenAI:
         user_data = UserData(user_name, user_messages, result.usage)
         self.context.save_user_messages(user_data)
 
-        return result.assistant_message
+        return result
 
-    def get_response_for_new_group_message(self, chat_id: int, user_name: str, message: str):
+    def get_response_for_new_group_message(self, chat_id: int, user_name: str, message: str) -> AIResponse:
         chat_data = self.context.load_chat_data(chat_id)
         chat_messages = chat_data.messages
 
@@ -97,4 +93,4 @@ class OpenAI:
         chat_data = ChatData(chat_id, chat_messages, result.usage)
         self.context.save_chat_data(chat_data)
 
-        return result.assistant_message
+        return result

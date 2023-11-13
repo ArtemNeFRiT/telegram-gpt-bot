@@ -36,7 +36,7 @@ async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if guard.is_user_available(user_name):
             await reply_private_message(chat_id, user_name, user_message, context.bot)
         else:
-            events_tracker.save_event(user_name, "пользователь не найден")
+            events_tracker.user_not_found(user_name)
             await telegram_bot.post_not_allowed_message(chat_id, context.bot)
     else:
         is_appeal_in_group = f"@chat_gpt_ai_tg_bot " in user_message and chat_type != ChatType.PRIVATE
@@ -49,29 +49,22 @@ async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def reply_private_message(chat_id: int, user_name: str, user_message: str, bot: Bot):
-    result = open_ai.get_response_for_new_message(user_name, user_message)
-    words_count = count_words(result)
-    statistic_provider.save_statistic(user_name, words_count)
-    events_tracker.save_event(user_name, "получил ответ. Кол-во слов: " + str(words_count))
-    await telegram_bot.post_message_to_telegram_chat(chat_id, result, bot)
+    ai_response = open_ai.get_response_for_new_message(user_name, user_message)
+    statistic_provider.save_statistic(user_name, ai_response)
+    events_tracker.save_ai_response_event(user_name, ai_response)
+    await telegram_bot.post_message_to_telegram_chat(chat_id, ai_response.assistant_message, bot)
 
 
 async def reply_in_group(chat_id: int, message_id: int, user_name: str, user_message: str, bot: Bot):
-    result = open_ai.get_response_for_new_group_message(chat_id, user_name, user_message)
-    words_count = count_words(result)
-    events_tracker.save_event(user_name, "получил ответ в группе. Кол-во слов: " + str(words_count))
-    await telegram_bot.reply_message_to_telegram_chat(chat_id, message_id, result, bot)
-
-
-def count_words(sentence):
-    words = sentence.split()
-    return len(words)
+    ai_response = open_ai.get_response_for_new_group_message(chat_id, user_name, user_message)
+    events_tracker.save_ai_response_event(user_name, ai_response)
+    await telegram_bot.reply_message_to_telegram_chat(chat_id, message_id, ai_response.assistant_message, bot)
 
 
 async def clear_private_context(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_name = update.effective_user.name
     open_ai.clear_user_messages(user_name)
-    events_tracker.save_event(user_name, "очистил контекст")
+    events_tracker.clear_context(user_name)
     await telegram_bot.post_context_cleared_message(update.effective_chat.id, context.bot)
 
 
@@ -81,7 +74,7 @@ async def clear_group_context(update: Update, context: ContextTypes.DEFAULT_TYPE
         chat_id_str = update.message.text.replace("/clear_group_context", "").strip()
         user_name = update.effective_user.name
         open_ai.clear_user_messages(chat_id_str)
-        events_tracker.save_event(user_name, "очистил контекст группы " + chat_id_str)
+        events_tracker.clear_group_context(user_name, chat_id_str)
         await telegram_bot.post_group_context_cleared_message(update.effective_chat.id, context.bot)
     else:
         await telegram_bot.post_not_administrator_message(update.effective_chat.id, context.bot)
@@ -96,7 +89,9 @@ async def post_month_statistics(update: Update, context: ContextTypes.DEFAULT_TY
             logger.info(
                 f"user: {user.user_name}, "
                 f"calls: {user.calls},"
-                f" completion_words_count: {user.completion_words_count}"
+                f"prompt_tokens: {user.prompt_tokens}"
+                f"completion_tokens: {user.completion_tokens}"
+                f"total_tokens: {user.total_tokens}"
             )
     else:
         await telegram_bot.post_not_administrator_message(update.effective_chat.id, context.bot)

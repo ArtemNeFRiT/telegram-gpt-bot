@@ -2,7 +2,7 @@
 
 [English](README.md) | [Русский](docs/ru/README.md)
 
-The `Telegram GPT Bot` is Telegram Bot integrated with ChatGPT 3.5 Turbo AI model.
+The `Telegram GPT Bot` is Telegram Bot integrated with ChatGPT 4.5 Turbo AI model.
 
 ![](assets/preview1.png)
 
@@ -23,22 +23,6 @@ With this bot, you can:
 Ensure that you comply with the terms of use and guidelines for using the bot and the OpenAI API. Be polite and respect privacy policies while interacting with the bot.
 
 Enjoy conversing with the bot powered by ChatGPT Turbo 3.5 and experiment with different questions and discussion topics!
-
-# Get access
-
-### Private access
-
-1. Fill out a [simple form](https://forms.gle/26Uq9iDtmGs3DpR96). With this information AI will understand the context of conversation.
-
-2. 
-
-### Group access
-
-1. Fill out a [simple form](https://forms.gle/gndbXKAamKrjMPAD8). With this information AI will understand the context of conversation.
-
-2. 
-
-# Pricing and Limits (WIP)
 
 # Configuration your Bot
 

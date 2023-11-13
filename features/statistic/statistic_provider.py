@@ -3,6 +3,7 @@ import json
 import logging
 import os
 
+from features.ai.model.ai_response import AIResponse
 from features.statistic.model.usage import Usage
 
 STATISTIC_FILE_PATH = "statistics/statistic.txt"
@@ -12,41 +13,8 @@ STATISTIC_FOLDER_NAME = "statistics"
 
 class StatisticProvider:
 
-    def _save_statistic(self, user_name: str, words_count: int):
-        file = open(STATISTIC_FILE_PATH, "a+")
-        file.seek(0)
-
-        previous_key = None
-        previous_number = 0
-
-        for line in file:
-            stored_key, stored_number = line.strip().split(":")
-            if stored_key == user_name:
-                previous_key = stored_key
-                previous_number = int(stored_number)
-                break
-
-        new_number = words_count + previous_number
-
-        file.seek(0)
-        lines = file.readlines()
-
-        if previous_key:
-            updated_line = f"{previous_key}:{new_number}\n"
-            lines[lines.index(f"{previous_key}:{previous_number}\n")] = updated_line
-        else:
-            updated_line = f"{user_name}:{new_number}\n"
-            lines.append(updated_line)
-
-        file.seek(0)
-        file.truncate()
-        file.writelines(lines)
-
-        file.close()
-
-    def save_statistic(self, user_name: str, completion_words_count: int):
+    def save_statistic(self, user_name: str, ai_response: AIResponse):
         self._create_statistic_folder()
-        self._save_statistic(user_name, completion_words_count)
 
         statistics_file_full_path = self._get_statistic_file_full_path()
 
@@ -60,7 +28,9 @@ class StatisticProvider:
         for entry in data:
             if entry['user'] == user_name:
                 entry['calls'] += 1
-                entry['completion_words_count'] += completion_words_count
+                entry['prompt_tokens'] = entry.get('prompt_tokens', 0) + ai_response.usage.prompt_tokens
+                entry['completion_tokens'] = entry.get('completion_tokens', 0) + ai_response.usage.completion_tokens
+                entry['total_tokens'] = entry.get('total_tokens', 0) + ai_response.usage.total_tokens
                 user_found = True
                 break
 
@@ -68,13 +38,13 @@ class StatisticProvider:
             data.append({
                 'user': user_name,
                 'calls': 1,
-                'completion_words_count': completion_words_count
+                'prompt_tokens': ai_response.usage.prompt_tokens,
+                'completion_tokens': ai_response.usage.completion_tokens,
+                'total_tokens': ai_response.usage.total_tokens
             })
 
         with open(statistics_file_full_path, 'w') as file:
             json.dump(data, file, ensure_ascii=False, indent=4)
-
-        logger.info(f"Данные пользователя {user_name} обновлены.")
 
     def _get_statistic_file_full_path(self) -> str:
         now = datetime.datetime.now()
@@ -95,7 +65,8 @@ class StatisticProvider:
             logger.error("Файл не найден")
             return []
 
-        usages = [Usage(user['user'], user['calls'], user['completion_words_count']) for user in data]
+        usages = [Usage(user['user'], user['calls'], user['prompt_tokens'], user['completion_tokens'],
+                        user['total_tokens']) for user in data]
         sorted_usages = sorted(usages, key=lambda x: x.completion_words_count, reverse=True)
 
         return sorted_usages[:count]

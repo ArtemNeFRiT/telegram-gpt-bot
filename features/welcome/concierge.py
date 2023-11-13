@@ -13,12 +13,12 @@ class Concierge:
     async def welcome_new_user(self, chat_id: int, bot: Bot, user: str):
         prompt = self._create_welcome_prompt(user)
         result = self.open_ai.get_response_for_new_group_message(chat_id, "", prompt)
-        await self.telegram_bot.post_message_to_telegram_chat(chat_id, result, bot)
+        await self.telegram_bot.post_message_to_telegram_chat(chat_id, result.assistant_message, bot)
 
     async def say_hello(self, chat_id: int, bot: Bot):
         prompt = self._create_hello_prompt()
         result = self.open_ai.get_response_for_new_group_message(chat_id, "", prompt)
-        await self.telegram_bot.post_message_to_telegram_chat(chat_id, result, bot)
+        await self.telegram_bot.post_message_to_telegram_chat(chat_id, result.assistant_message, bot)
 
     def _create_hello_prompt(self) -> str:
         return "Представься."
